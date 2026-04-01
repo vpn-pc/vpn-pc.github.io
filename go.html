@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Переход на внешний сайт...</title>
+    <style>
+        body { background: #0a0a0a; color: #fff; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; text-align: center; }
+        .loader { border: 3px solid #333; border-top: 3px solid #00ffff; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        a { color: #00ffff; text-decoration: none; font-size: 14px; opacity: 0.7; }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="loader"></div>
+        <p>Безопасный переход на внешний ресурс...</p>
+        <p id="timer">Вы будете перенаправлены через 3 секунды</p>
+        <a id="manual-link" href="#">Перейти не дожидаясь</a>
+    </div>
+
+    <script>
+        // Получаем URL из параметра ?to=
+        const urlParams = new URLSearchParams(window.location.search);
+        let targetUrl = urlParams.get('to');
+
+        if (targetUrl) {
+            // Базовая проверка на протокол
+            if (!targetUrl.startsWith('http')) {
+                targetUrl = 'https://' + targetUrl;
+            }
+
+            const manualLink = document.getElementById('manual-link');
+            manualLink.href = targetUrl;
+
+            let seconds = 2;
+            const timerElement = document.getElementById('timer');
+
+            const countdown = setInterval(() => {
+                seconds--;
+                if (seconds <= 0) {
+                    clearInterval(countdown);
+                    window.location.replace(targetUrl); // Редирект без сохранения истории
+                } else {
+                    timerElement.innerText = `Вы будете перенаправлены через ${seconds} сек.`;
+                }
+            }, 1000);
+        } else {
+            document.body.innerHTML = "<h1>Ошибка: ссылка не найдена</h1>";
+        }
+    </script>
+</body>
+</html>
